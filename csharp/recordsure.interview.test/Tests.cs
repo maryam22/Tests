@@ -104,7 +104,7 @@ namespace recordsure.interview.test
 
         [Test]
         public void CanSort() {
-            throw new NotImplementedException();
+            Assert.AreEqual(new List<int> { 0, 2, 4, 5 }, instance.Sort(new int[] { 0, 5, 2, 4 }));
         }
 
         [Test]

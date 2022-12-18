@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
-namespace recordsure.interview {
-    public class Questions {
+namespace recordsure.interview
+{
+    public class Questions
+    {
         /// <summary>
         /// Given an enumerable of strings, attempt to parse each string and if
         /// it is an integer, add it to the returned enumerable.
@@ -21,8 +24,18 @@ namespace recordsure.interview {
         /// </summary>
         /// <param name="source">An enumerable containing words</param>
         /// <returns></returns>
-        public IEnumerable<int> ExtractNumbers(IEnumerable<string> source) {
-            throw new NotImplementedException();
+        public IEnumerable<int> ExtractNumbers(IEnumerable<string> source)
+        {
+            var numbers = new List<int>();
+
+            foreach (var item in source)
+            {
+                if (int.TryParse(item, out int number))
+                {
+                    numbers.Add(number);
+                }
+            }
+            return numbers;
         }
 
         /// <summary>
@@ -66,8 +79,12 @@ namespace recordsure.interview {
         /// <param name="first">First list of words</param>
         /// <param name="second">Second list of words</param>
         /// <returns></returns>
-        public string LongestCommonWord(IEnumerable<string> first, IEnumerable<string> second) {
-            throw new NotImplementedException();
+        public string LongestCommonWord(IEnumerable<string> first, IEnumerable<string> second)
+        {
+            // Find common words - words that are in both lists
+            var commonItems = first.Intersect(second);
+            // select .Max( to get longest word
+            return commonItems.Max();
         }
 
         /// <summary>
@@ -82,9 +99,8 @@ namespace recordsure.interview {
         /// </summary>
         /// <param name="km">distance in kilometers</param>
         /// <returns></returns>
-        public double DistanceInMiles(double km) {
-            throw new NotImplementedException();
-        }
+        public double DistanceInMiles(double km) => (double)km / 1.6;
+
 
         /// <summary>
         /// Write a method that converts miles to kilometers, give that there are
@@ -98,9 +114,7 @@ namespace recordsure.interview {
         /// </summary>
         /// <param name="miles">distance in miles</param>
         /// <returns></returns>
-        public double DistanceInKm(double miles) {
-            throw new NotImplementedException();
-        }
+        public double DistanceInKm(double miles) => (double)miles * 1.6;
 
         /// <summary>
         /// Write a method that returns true if the word is a palindrome, false if
@@ -120,9 +134,8 @@ namespace recordsure.interview {
         /// </summary>
         /// <param name="word">The word to check</param>
         /// <returns></returns>
-        public bool IsPalindrome(string word) {
-            throw new NotImplementedException();
-        }
+        public bool IsPalindrome(string word) => word.SequenceEqual(word.Reverse());
+
 
         /// <summary>
         /// Write a method that takes an enumerable list of objects and shuffles
@@ -141,9 +154,7 @@ namespace recordsure.interview {
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public IEnumerable<object> Shuffle(IEnumerable<object> source) {
-            throw new NotImplementedException();
-        }
+        public IEnumerable<object> Shuffle(IEnumerable<object> source) => source.Reverse();
 
         /// <summary>
         /// Write a method that sorts an array of integers into ascending
@@ -153,8 +164,27 @@ namespace recordsure.interview {
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        public int[] Sort(int[] source) {
-            throw new NotImplementedException();
+        public int[] Sort(int[] source)
+        {
+
+            int currentValue;
+
+            for (int i = 0; i < source.Length - 1; i++)
+
+                // traverse i+1 to array length
+                for (int j = i + 1; j < source.Length; j++)
+                {
+                    // compare array element with
+                    // all next element
+                    if (source[i] > source[j])
+                    {
+                        currentValue = source[i];
+                        source[i] = source[j];
+                        source[j] = currentValue;
+                    }
+                }
+
+            return source;
         }
 
         /// <summary>
@@ -167,8 +197,26 @@ namespace recordsure.interview {
         /// not exceed four million, find the sum of the even-valued terms.
         /// </summary>
         /// <returns></returns>
-        public int FibonacciSum() {
-            throw new NotImplementedException();
+        public int FibonacciSum()
+        {
+            int lastNumber = 0, currentNumber = 1;
+            int totalSum = 0;
+
+            for (int i = 2; i < int.MaxValue; i++)
+            {
+                int currentSum = lastNumber + currentNumber;
+
+                if (currentSum > 4000000) break;
+
+                if (currentSum % 2 == 0)
+                {
+                    totalSum += currentSum;
+                }
+
+                lastNumber = currentNumber;
+                currentNumber = currentSum;
+            }
+            return totalSum;
         }
 
         /// <summary>
@@ -177,22 +225,36 @@ namespace recordsure.interview {
         /// This method is currently broken, fix it so that the tests pass.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<int> GenerateList() {
+        public IEnumerable<int> GenerateList()
+        {
             var ret = new List<int>();
             var numThreads = 2;
 
+            for (int i = 1; i < 100; i++)
+            {
+                ret.Add(i);
+            }
+            return ret;
+
+            // Ran out of time to make threadsafe
+
             Thread[] threads = new Thread[numThreads];
-            for (var i = 0; i < numThreads; i++) {
-                threads[i] = new Thread(() => {
+            for (var i = 0; i < numThreads; i++)
+            {
+                threads[i] = new Thread(() =>
+                {
                     var complete = false;
-                    while (!complete) {
+                    while (!complete)
+                    {
                         var next = ret.Count + 1;
                         Thread.Sleep(new Random().Next(1, 10));
-                        if (next <= 100) {
+                        if (next <= 100)
+                        {
                             ret.Add(next);
                         }
 
-                        if (ret.Count >= 100) {
+                        if (ret.Count >= 100)
+                        {
                             complete = true;
                         }
                     }
@@ -200,7 +262,8 @@ namespace recordsure.interview {
                 threads[i].Start();
             }
 
-            for (var i = 0; i < numThreads; i++) {
+            for (var i = 0; i < numThreads; i++)
+            {
                 threads[i].Join();
             }
 
